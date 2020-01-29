@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type AirAQIResponse struct {
+type airAQIResponse struct {
 	Status string `json:"status"`
 	Data   struct {
 		Aqi          int `json:"aqi"`
@@ -69,15 +69,13 @@ type AirAQIResponse struct {
 	} `json:"data"`
 }
 
-type Location struct {
+type location struct {
 	Name string  `json:"name"`
 	Lat  float64 `json:"lat"`
 	Long float64 `json:"long"`
 }
 
 func getAQI(lat float64, long float64) int {
-	// Request (GET https://api.waqi.info/feed/geo:13.722590;100.520400/?token=c68f5c2d123625f3b476ae72b80601ab992fbdd0)
-
 	// Create client
 	client := &http.Client{}
 
@@ -91,7 +89,7 @@ func getAQI(lat float64, long float64) int {
 		fmt.Println(parseFormErr)
 	}
 
-	var AQIResponse AirAQIResponse
+	var AQIResponse airAQIResponse
 
 	resp, err := client.Do(req)
 
@@ -103,7 +101,7 @@ func getAQI(lat float64, long float64) int {
 	return AQIResponse.Data.Iaqi.Pm25.V
 }
 
-func sendRequest(places []Location) {
+func sendRequest(places []location) {
 	apiURL := "https://notify-api.line.me/api/notify"
 	data := url.Values{}
 	message := "\nDaily AQI Update:"
@@ -125,6 +123,6 @@ func sendRequest(places []Location) {
 }
 
 func main() {
-	var places = []Location{Location{"Condo", 13.722070, 100.534140}, Location{"Work", 13.722590, 100.520400}, Location{"Home", 13.794310, 100.397170}}
+	var places = []location{location{"Condo", 13.722070, 100.534140}, location{"Work", 13.722590, 100.520400}, location{"Home", 13.794310, 100.397170}}
 	sendRequest(places)
 }
